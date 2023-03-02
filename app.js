@@ -1,21 +1,24 @@
 import express from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
-
 import photoRoutes from './routes/photoRoutes.js';
-import connectDB from './config/db.js';
+import userRoutes from './routes/userRoutes.js';
 
-const app = express();
+import connectDB from './config/db.js';
+import { errorHandler } from './middleware/errorMiddleware.js';
 const port = process.env.PORT;
 connectDB();
 
-// Mount photoRoutes router on /api/photos base path
-app.use('/api/photos', photoRoutes);
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.get('/', (req, res) => {
   res.status(200).json({ message: 'Welcome to the Unsplash API!' });
 });
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
-});
+app.use('/api/photos', photoRoutes);
+app.use('/api/users', userRoutes);
+
+app.use(errorHandler);
+app.listen(port, () => console.log(` listening on port ${port}`));
