@@ -1,10 +1,13 @@
 import express from 'express';
-import photoRoutes from './routes/photoRoutes.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
+import photoRoutes from './routes/photoRoutes.js';
+import connectDB from './config/db.js';
+
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
+connectDB();
 
 // Mount photoRoutes router on /api/photos base path
 app.use('/api/photos', photoRoutes);
